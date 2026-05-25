@@ -269,9 +269,9 @@ git clone https://github.com/EttusResearch/uhd
 cd uhd\host
 $null = mkdir build
 cd build
-cmake $build_args -DENABLE_MAN_PAGES=OFF -DENABLE_MANUAL=OFF -DENABLE_PYTHON_API=OFF -DENABLE_EXAMPLES=OFF -DENABLE_UTILS=OFF -DENABLE_TESTS=OFF -DPYTHON_EXECUTABLE="$((Get-Command python).Source)" ..
+cmake $build_args -DENABLE_MAN_PAGES=OFF -DENABLE_MANUAL=OFF -DENABLE_PYTHON_API=OFF -DENABLE_EXAMPLES=OFF -DENABLE_PYTHON_BINDING=OFF -DENABLE_UTILS=OFF -DENABLE_TESTS=OFF -DPYTHON_EXECUTABLE="$((Get-Command python).Source)" ..
 cmake --build . --config Release --parallel
-cmake --install . -ErrorAction SilentlyContinue
+cmake --install .
 cd ..\..\..\
 rm -recurse -force uhd
 
