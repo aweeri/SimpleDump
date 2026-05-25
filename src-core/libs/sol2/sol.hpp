@@ -9668,7 +9668,7 @@ namespace sol {
 
 // beginning of sol/error_handler.hpp
 
-#include <sol/config.hpp>
+#include "config.hpp"
 
 #include <cstdio>
 
