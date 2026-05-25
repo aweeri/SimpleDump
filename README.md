@@ -1,4 +1,4 @@
-# SatDump
+# SimpleDump
 
 <img src='/icon.png' width='500px' />
 
@@ -13,7 +13,7 @@ There is no official documentation yet.
 
 # Build SimpleDump
 
-#### Build SatDump
+#### Build SimpleDump
 ```
 git clone https://github.com/aweeri/SimpleDump.git
 cd SimpleDump
