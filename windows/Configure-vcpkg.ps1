@@ -233,12 +233,12 @@ if($platform -eq "x64-windows" -or $platform -eq "x86-windows")
     Invoke-WebRequest -Uri "https://www.satdump.org/FX3-SDK.zip" -OutFile FX3-SDK.zip
     Expand-Archive FX3-SDK.zip .
     $fx3_arg = "-DFX3_SDK_PATH=$($(Get-Item .\FX3-SDK).FullName)"
-    git clone https://github.com/myriadrf/LimeSuite #--depth 1 -b v23.11.0
+    git clone https://github.com/myriadrf/LimeSuite
     cd LimeSuite
     $null = mkdir build-dir
     cd build-dir
     cmake $build_args -DENABLE_GUI=OFF $fx3_arg ..
-    cmake --build . --config Release
+    cmake --build . --config Release --parallel
     cmake --install .
     cd ..\..
     rm -recurse -force LimeSuite
@@ -253,7 +253,7 @@ Clear-Content cmake/modules/FindLibUSB.cmake
 $null = mkdir build
 cd build
 cmake $build_args $fx3_arg -DTREAT_WARNINGS_AS_ERRORS=OFF -DLIBPTHREADSWIN32_INCLUDE_DIRS="$($standard_include)" -DLIBUSB_INCLUDE_DIRS="$($libusb_include)" -DLIBUSB_LIBRARIES="$($libusb_lib)" -DLIBPTHREADSWIN32_LIBRARIES="$($pthread_lib)" -DTEST_LIBBLADERF=OFF -DLIBUSB_FOUND=ON -DLIBPTHREADSWIN32_FOUND=ON -DLIBUSB_VERSION="$($(ls ..\..\..\..\installed\vcpkg\info\libusb*).BaseName.split('_')[1])" ..
-cmake --build . --config Release
+cmake --build . --config Release --parallel
 cmake --install .
 cd ..\..\..
 rm -recurse -force bladeRF
@@ -262,17 +262,18 @@ rm -recurse -force bladeRF
 if($platform -eq "x64-windows" -or $platform -eq "x86-windows")
 {
     rm -recurse -force FX3-SDK, FX3-SDK.zip
-    Write-Output "Building UHD..."
-    git clone https://github.com/EttusResearch/uhd #--depth 1 -b v4.7.0.0
-    cd uhd\host
-    $null = mkdir build
-    cd build
-    cmake $build_args -DENABLE_MAN_PAGES=OFF -DENABLE_MANUAL=OFF -DENABLE_PYTHON_API=OFF -DENABLE_EXAMPLES=OFF -DENABLE_UTILS=OFF -DENABLE_TESTS=OFF ..
-    cmake --build . --config Release
-    cmake --install .
-    cd ..\..\..
-    rm -recurse -force uhd
 }
+
+Write-Output "Building UHD..."
+git clone https://github.com/EttusResearch/uhd
+cd uhd\host
+$null = mkdir build
+cd build
+cmake $build_args -DENABLE_MAN_PAGES=OFF -DENABLE_MANUAL=OFF -DENABLE_PYTHON_API=OFF -DENABLE_EXAMPLES=OFF -DENABLE_UTILS=OFF -DENABLE_TESTS=OFF -DPYTHON_EXECUTABLE="$((Get-Command python).Source)" ..
+cmake --build . --config Release --parallel
+cmake --install .
+cd ..\..\.
+rm -recurse -force uhd
 
 cd ..
 rm -recurse -force build

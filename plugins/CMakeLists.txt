@@ -320,7 +320,7 @@ if(PLUGIN_BLADERF_SDR_SUPPORT)
   add_subdirectory(sdr_sources/bladerf_sdr_support)
 endif()
 
-option(PLUGIN_USRP_SDR_SUPPORT "Enable USRP SDR Support plugin" OFF)
+option(PLUGIN_USRP_SDR_SUPPORT "Enable USRP SDR Support plugin" ON)
 
 if(PLUGIN_USRP_SDR_SUPPORT)
   add_subdirectory(sdr_sources/usrp_sdr_support)
