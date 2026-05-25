@@ -6,6 +6,14 @@ then
     cd $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../build
 fi
 
+HOMEBREW_LIB="/usr/local"
+PLATFORM="Intel"
+if [[ $(uname -m) == 'arm64' ]]; then
+    PLATFORM="Silicon"
+    HOMEBREW_LIB="/opt/homebrew"
+fi
+
+
 if [[ -n "$MACOS_CERTIFICATE" && -n "$MACOS_CERTIFICATE_PWD" ]]
 then
     echo "Extracting signing certificate..."
@@ -18,13 +26,12 @@ then
 fi
 
 rm -rf MacApp
-rm -rf SimpleDump-macOS-$1.dmg
+rm -rf SimpleDump-macOS-$PLATFORM.dmg
 
 echo "Making app shell..." 
 mkdir -p MacApp/SimpleDump.app/Contents/MacOS
 mkdir -p MacApp/SimpleDump.app/Contents/Resources/plugins
 cp -r $GITHUB_WORKSPACE/resources MacApp/SimpleDump.app/Contents/Resources/resources
-cp -r $GITHUB_WORKSPACE/pipelines MacApp/SimpleDump.app/Contents/Resources/pipelines
 cp $GITHUB_WORKSPACE/simpledump_cfg.json MacApp/SimpleDump.app/Contents/Resources
 cp $GITHUB_WORKSPACE/macOS/Info.plist MacApp/SimpleDump.app/Contents
 cp $GITHUB_WORKSPACE/macOS/Readme.rtf MacApp/Readme.rtf
@@ -47,7 +54,7 @@ rm -rf macOSIcon.iconset
 echo "Copying binaries..."
 cp simpledump-ui MacApp/SimpleDump.app/Contents/MacOS
 cp simpledump MacApp/SimpleDump.app/Contents/MacOS
-cp simpledump_sdr_server MacApp/SimpleDump.app/Contents/MacOS
+cp satdump_sdr_server MacApp/SimpleDump.app/Contents/MacOS
 cp plugins/*.dylib MacApp/SimpleDump.app/Contents/Resources/plugins
 
 if [[ -n "$MACOS_SIGNING_SIGNATURE" ]]
@@ -55,13 +62,52 @@ then
     SIGN_FLAG="-ns"
 fi
 
-echo "Re-linking binaries"
+# Omp, openblas, and gfortran are not in $HOMEBREW_LIB/lib for some ungodly reason; we include their full paths instead
+echo "Packaging and re-linking libraries..."
 plugin_args=$(ls MacApp/SimpleDump.app/Contents/Resources/plugins | xargs printf -- '-x MacApp/SimpleDump.app/Contents/Resources/plugins/%s ')
-dylibbundler $SIGN_FLAG -cd -s $GITHUB_WORKSPACE/vcpkg/installed/osx-simpledump/lib/ -s . -d MacApp/SimpleDump.app/Contents/libs -b -x MacApp/SimpleDump.app/Contents/MacOS/simpledump-ui -x MacApp/SimpleDump.app/Contents/MacOS/simpledump_sdr_server -x MacApp/SimpleDump.app/Contents/MacOS/simpledump $plugin_args
+dylibbundler $SIGN_FLAG \
+  -cd \
+  -b \
+  -of \
+  -s . \
+  -s $GITHUB_WORKSPACE/deps/lib \
+  -s $HOMEBREW_LIB/lib \
+  -s $HOMEBREW_LIB/opt/libomp/lib \
+  -s $HOMEBREW_LIB/opt/openblas/lib \
+  -s $HOMEBREW_LIB/opt/gfortran/lib/gcc/current \
+  -d MacApp/SimpleDump.app/Contents/libs \
+  -x MacApp/SimpleDump.app/Contents/MacOS/simpledump-ui \
+  -x MacApp/SimpleDump.app/Contents/MacOS/satdump_sdr_server \
+  -x MacApp/SimpleDump.app/Contents/MacOS/simpledump \
+  $plugin_args
+
+# SDRPlay is custom, not staticaly linked; we can copy it manually
+cp $GITHUB_WORKSPACE/deps/lib/libsdrplay*.dylib MacApp/SimpleDump.app/Contents/libs
+
+
+# Some libraries are processed more than once, dylibbundler is silly and doesn't check whether
+# it injects multiple LC_RPATH entries. MacOS is pissy about it and refuses to work with more than one,
+# so we have to remove the duplicates manually.
+echo "Removing duplicate RPATH entries..."
+find MacApp/SimpleDump.app/Contents/libs -name "*.dylib" | while read lib; do
+    rpaths=($(otool -l "$lib" | awk '/LC_RPATH/{getline; getline; sub(/.*path /,""); sub(/ .*/,""); print}'))
+    seen=()
+    for rp in "${rpaths[@]}"; do
+        if [[ " ${seen[*]} " != *" $rp "* ]]; then
+            seen+=("$rp")
+        else
+            install_name_tool -delete_rpath "$rp" "$lib"
+        fi
+    done
+
+    # We have to resign the libraries afterwards as we changed their Mach-O headers
+    codesign -v --force --timestamp --sign - "$lib"
+done
+
 
 if [[ -n "$MACOS_SIGNING_SIGNATURE" ]]
 then
-    echo "Code signing..."
+    echo "Signing code using proper signature..."
     for dylib in MacApp/SimpleDump.app/Contents/libs/*.dylib
     do
 	    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" $dylib
@@ -73,26 +119,31 @@ then
     done
 
     codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/simpledump
-    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/simpledump_sdr_server
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/satdump_sdr_server
     codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/simpledump-ui
+else 
+    echo "No signature found, signing with ad-hoc signature..."
 
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign - MacApp/SimpleDump.app/Contents/MacOS/simpledump
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign - MacApp/SimpleDump.app/Contents/MacOS/satdump_sdr_server
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign - MacApp/SimpleDump.app/Contents/MacOS/simpledump-ui
+
+    codesign --force --deep --sign - MacApp/SimpleDump.app
 fi
 
 echo "Creating SimpleDump.dmg..."
-hdiutil create -srcfolder MacApp/ -volname SimpleDump SimpleDump-macOS-$1.dmg
+hdiutil create -srcfolder MacApp/ -volname SimpleDump SimpleDump-macOS-$PLATFORM.dmg
 
 if [[ -n "$MACOS_SIGNING_SIGNATURE" ]]
 then
-    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" SimpleDump-macOS-$1.dmg
+    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" SimpleDump-macOS-$PLATFORM.dmg
 
     if [[ -n "$MACOS_NOTARIZATION_UN" && -n "$MACOS_NOTARIZATION_PWD" && -n "$MACOS_TEAM" ]]
     then
         echo "Notarizing DMG..."
-        xcrun notarytool submit SimpleDump-macOS-$1.dmg --apple-id $MACOS_NOTARIZATION_UN --password $MACOS_NOTARIZATION_PWD --team-id $MACOS_TEAM --wait
-        xcrun stapler staple SimpleDump-macOS-$1.dmg
+        xcrun notarytool submit SimpleDump-macOS-$PLATFORM.dmg --apple-id $MACOS_NOTARIZATION_UN --password $MACOS_NOTARIZATION_PWD --team-id $MACOS_TEAM --wait
+        xcrun stapler staple SimpleDump-macOS-$PLATFORM.dmg
     fi
 fi
 
 echo "Done!"
-
-
