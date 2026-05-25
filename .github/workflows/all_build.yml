@@ -36,7 +36,7 @@ jobs:
 
             - name: Install Python dependencies for UHD
               if: steps.win-deps-x64.outputs.cache-hit != 'true'
-              run: pip install mako requests numpy ruamel.yaml
+              run: pip install mako requests numpy ruamel.yaml setuptools
 
             - name: Add msbuild to PATH
               if: steps.win-deps-x64.outputs.cache-hit != 'true'
@@ -114,7 +114,7 @@ jobs:
 
             - name: Install Python dependencies for UHD
               if: steps.win-deps-arm64.outputs.cache-hit != 'true'
-              run: pip install mako requests numpy ruamel.yaml
+              run: pip install mako requests numpy ruamel.yaml setuptools
 
             - name: Add msbuild to PATH
               if: steps.win-deps-arm64.outputs.cache-hit != 'true'
