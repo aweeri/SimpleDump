@@ -350,7 +350,7 @@ if(PLUGIN_RTLTCP_SUPPORT)
   add_subdirectory(sdr_sources/rtltcp_support)
 endif()
 
-option(PLUGIN_SDRPP_SERVER_SUPPORT "Enable SDR++ Server Support plugin" ON)
+option(PLUGIN_SDRPP_SERVER_SUPPORT "Enable SDR++ Server Support plugin" OFF)
 
 if(PLUGIN_SDRPP_SERVER_SUPPORT)
   add_subdirectory(sdr_sources/sdrpp_server_support)
@@ -362,7 +362,7 @@ if(PLUGIN_AARONIA_SDR_SUPPORT)
   add_subdirectory(sdr_sources/aaronia_sdr_support)
 endif()
 
-option(PLUGIN_RFNM_SDR_SUPPORT "Enable RFNM Support plugin" ON)
+option(PLUGIN_RFNM_SDR_SUPPORT "Enable RFNM Support plugin" OFF)
 
 if(PLUGIN_RFNM_SDR_SUPPORT)
   add_subdirectory(sdr_sources/rfnm_sdr_support)
