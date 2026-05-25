@@ -70,35 +70,35 @@ namespace satdump
                 return;
 
             bool bad_path = false;
-            if (config::main_cfg["satdump_directories"]["recording_path"]["value"].get<std::string>() == ".")
+            if (config::main_cfg["simpledump_directories"]["recording_path"]["value"].get<std::string>() == ".")
             {
                 bad_path = true;
-                config::main_cfg["satdump_directories"]["recording_path"]["value"] = documents_dir;
+                config::main_cfg["simpledump_directories"]["recording_path"]["value"] = documents_dir;
             }
-            if (config::main_cfg["satdump_directories"]["live_processing_path"]["value"].get<std::string>() == "./live_output")
+            if (config::main_cfg["simpledump_directories"]["live_processing_path"]["value"].get<std::string>() == "./live_output")
             {
                 bad_path = true;
-                config::main_cfg["satdump_directories"]["live_processing_path"]["value"] = documents_dir + "/live_output";
+                config::main_cfg["simpledump_directories"]["live_processing_path"]["value"] = documents_dir + "/live_output";
             }
-            if (config::main_cfg["satdump_directories"]["default_input_directory"]["value"].get<std::string>() == ".")
+            if (config::main_cfg["simpledump_directories"]["default_input_directory"]["value"].get<std::string>() == ".")
             {
                 bad_path = true;
-                config::main_cfg["satdump_directories"]["default_input_directory"]["value"] = documents_dir;
+                config::main_cfg["simpledump_directories"]["default_input_directory"]["value"] = documents_dir;
             }
-            if (config::main_cfg["satdump_directories"]["default_output_directory"]["value"].get<std::string>() == ".")
+            if (config::main_cfg["simpledump_directories"]["default_output_directory"]["value"].get<std::string>() == ".")
             {
                 bad_path = true;
-                config::main_cfg["satdump_directories"]["default_output_directory"]["value"] = documents_dir;
+                config::main_cfg["simpledump_directories"]["default_output_directory"]["value"] = documents_dir;
             }
-            if (config::main_cfg["satdump_directories"]["default_image_output_directory"]["value"].get<std::string>() == ".")
+            if (config::main_cfg["simpledump_directories"]["default_image_output_directory"]["value"].get<std::string>() == ".")
             {
                 bad_path = true;
-                config::main_cfg["satdump_directories"]["default_image_output_directory"]["value"] = documents_dir;
+                config::main_cfg["simpledump_directories"]["default_image_output_directory"]["value"] = documents_dir;
             }
-            if (config::main_cfg["satdump_directories"]["default_projection_output_directory"]["value"].get<std::string>() == ".")
+            if (config::main_cfg["simpledump_directories"]["default_projection_output_directory"]["value"].get<std::string>() == ".")
             {
                 bad_path = true;
-                config::main_cfg["satdump_directories"]["default_projection_output_directory"]["value"] = documents_dir;
+                config::main_cfg["simpledump_directories"]["default_projection_output_directory"]["value"] = documents_dir;
             }
             if (bad_path)
                 saveUserConfig();

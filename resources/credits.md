@@ -1,7 +1,7 @@
 # SatDump
 
 First time here? See the reference documents below to get started using SatDump.
-[About](https://www.satdump.org/about/) | [Basic Usage](https://www.satdump.org/posts/basic-usage/) | [Docs](https://docs.satdump.org/)
+[About](https://www.simpledump.org/about/) | [Basic Usage](https://www.simpledump.org/posts/basic-usage/) | [Docs](https://docs.simpledump.org/)
 
 # Libraries
 

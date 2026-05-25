@@ -1,10 +1,10 @@
 .vscode
 build
 android/local.properties
-android/SatDump/.cxx
+android/app/.cxx
 android/.gradle
-android/SatDump/build
-android/SatDump/assets
+android/app/build
+android/app/assets
 android/.idea
 android/.settings
 android/CMakeFiles

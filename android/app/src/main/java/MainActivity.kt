@@ -1,4 +1,4 @@
-package com.altillimity.satdump
+package com.altillimity.simpledump
 
 import android.app.NativeActivity
 import android.os.Bundle
@@ -51,7 +51,7 @@ fun Intent?.getFilePathDir(context: Context): String {
 }
 
 class MainActivity : NativeActivity(), TextWatcher {
-    private val TAG : String = "SatDump";
+    private val TAG : String = "SimpleDump";
 
     public var usbManager : UsbManager? = null;
     public var SDR_device : UsbDevice? = null;
@@ -68,7 +68,7 @@ class MainActivity : NativeActivity(), TextWatcher {
     }
 
     // Adapted from Ryzerth's implementation, a lot cleaner than my old Java crap!
-    private var ACTION_USB_PERMISSION = "org.satdump.satdump.USB_PERMISSION";
+    private var ACTION_USB_PERMISSION = "org.simpledump.simpledump.USB_PERMISSION";
 
     private var usbReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -147,7 +147,7 @@ class MainActivity : NativeActivity(), TextWatcher {
         extractDir(aman, fdir + "/pipelines", "pipelines");
         extractDir(aman, fdir + "/resources", "resources");
         // extractDir(aman, fdir + "/plugins", "plugins");
-        extractFile(aman, fdir + "/satdump_cfg.json", "satdump_cfg.json");
+        extractFile(aman, fdir + "/simpledump_cfg.json", "simpledump_cfg.json");
         //createIfDoesntExist(fdir + "/plugins");
 
         return fdir;

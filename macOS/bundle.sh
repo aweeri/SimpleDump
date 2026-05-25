@@ -18,15 +18,15 @@ then
 fi
 
 rm -rf MacApp
-rm -rf SatDump-macOS-$1.dmg
+rm -rf SimpleDump-macOS-$1.dmg
 
 echo "Making app shell..." 
-mkdir -p MacApp/SatDump.app/Contents/MacOS
-mkdir -p MacApp/SatDump.app/Contents/Resources/plugins
-cp -r $GITHUB_WORKSPACE/resources MacApp/SatDump.app/Contents/Resources/resources
-cp -r $GITHUB_WORKSPACE/pipelines MacApp/SatDump.app/Contents/Resources/pipelines
-cp $GITHUB_WORKSPACE/satdump_cfg.json MacApp/SatDump.app/Contents/Resources
-cp $GITHUB_WORKSPACE/macOS/Info.plist MacApp/SatDump.app/Contents
+mkdir -p MacApp/SimpleDump.app/Contents/MacOS
+mkdir -p MacApp/SimpleDump.app/Contents/Resources/plugins
+cp -r $GITHUB_WORKSPACE/resources MacApp/SimpleDump.app/Contents/Resources/resources
+cp -r $GITHUB_WORKSPACE/pipelines MacApp/SimpleDump.app/Contents/Resources/pipelines
+cp $GITHUB_WORKSPACE/simpledump_cfg.json MacApp/SimpleDump.app/Contents/Resources
+cp $GITHUB_WORKSPACE/macOS/Info.plist MacApp/SimpleDump.app/Contents
 cp $GITHUB_WORKSPACE/macOS/Readme.rtf MacApp/Readme.rtf
 
 echo "Creating app icon..." 
@@ -41,14 +41,14 @@ sips -z 256 256   $GITHUB_WORKSPACE/icon.png --out macOSIcon.iconset/icon_256x25
 sips -z 512 512   $GITHUB_WORKSPACE/icon.png --out macOSIcon.iconset/icon_256x256@2x.png
 sips -z 512 512   $GITHUB_WORKSPACE/icon.png --out macOSIcon.iconset/icon_512x512.png
 sips -z 1024 1024 $GITHUB_WORKSPACE/icon.png --out macOSIcon.iconset/icon_512x512@2x.png
-iconutil -c icns -o MacApp/SatDump.app/Contents/Resources/icon.icns macOSIcon.iconset
+iconutil -c icns -o MacApp/SimpleDump.app/Contents/Resources/icon.icns macOSIcon.iconset
 rm -rf macOSIcon.iconset
 
 echo "Copying binaries..."
-cp satdump-ui MacApp/SatDump.app/Contents/MacOS
-cp satdump MacApp/SatDump.app/Contents/MacOS
-cp satdump_sdr_server MacApp/SatDump.app/Contents/MacOS
-cp plugins/*.dylib MacApp/SatDump.app/Contents/Resources/plugins
+cp simpledump-ui MacApp/SimpleDump.app/Contents/MacOS
+cp simpledump MacApp/SimpleDump.app/Contents/MacOS
+cp simpledump_sdr_server MacApp/SimpleDump.app/Contents/MacOS
+cp plugins/*.dylib MacApp/SimpleDump.app/Contents/Resources/plugins
 
 if [[ -n "$MACOS_SIGNING_SIGNATURE" ]]
 then
@@ -56,41 +56,43 @@ then
 fi
 
 echo "Re-linking binaries"
-plugin_args=$(ls MacApp/SatDump.app/Contents/Resources/plugins | xargs printf -- '-x MacApp/SatDump.app/Contents/Resources/plugins/%s ')
-dylibbundler $SIGN_FLAG -cd -s $GITHUB_WORKSPACE/vcpkg/installed/osx-satdump/lib/ -s . -d MacApp/SatDump.app/Contents/libs -b -x MacApp/SatDump.app/Contents/MacOS/satdump-ui -x MacApp/SatDump.app/Contents/MacOS/satdump_sdr_server -x MacApp/SatDump.app/Contents/MacOS/satdump $plugin_args
+plugin_args=$(ls MacApp/SimpleDump.app/Contents/Resources/plugins | xargs printf -- '-x MacApp/SimpleDump.app/Contents/Resources/plugins/%s ')
+dylibbundler $SIGN_FLAG -cd -s $GITHUB_WORKSPACE/vcpkg/installed/osx-simpledump/lib/ -s . -d MacApp/SimpleDump.app/Contents/libs -b -x MacApp/SimpleDump.app/Contents/MacOS/simpledump-ui -x MacApp/SimpleDump.app/Contents/MacOS/simpledump_sdr_server -x MacApp/SimpleDump.app/Contents/MacOS/simpledump $plugin_args
 
 if [[ -n "$MACOS_SIGNING_SIGNATURE" ]]
 then
     echo "Code signing..."
-    for dylib in MacApp/SatDump.app/Contents/libs/*.dylib
+    for dylib in MacApp/SimpleDump.app/Contents/libs/*.dylib
     do
 	    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" $dylib
     done
 
-    for dylib in MacApp/SatDump.app/Contents/Resources/plugins/*.dylib
+    for dylib in MacApp/SimpleDump.app/Contents/Resources/plugins/*.dylib
     do
 	    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" $dylib
     done
 
-    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SatDump.app/Contents/MacOS/satdump
-    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SatDump.app/Contents/MacOS/satdump_sdr_server
-    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SatDump.app/Contents/MacOS/satdump-ui
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/simpledump
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/simpledump_sdr_server
+    codesign -v --force --options runtime --entitlements $GITHUB_WORKSPACE/macOS/Entitlements.plist --timestamp --sign "$MACOS_SIGNING_SIGNATURE" MacApp/SimpleDump.app/Contents/MacOS/simpledump-ui
 
 fi
 
-echo "Creating SatDump.dmg..."
-hdiutil create -srcfolder MacApp/ -volname SatDump SatDump-macOS-$1.dmg
+echo "Creating SimpleDump.dmg..."
+hdiutil create -srcfolder MacApp/ -volname SimpleDump SimpleDump-macOS-$1.dmg
 
 if [[ -n "$MACOS_SIGNING_SIGNATURE" ]]
 then
-    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" SatDump-macOS-$1.dmg
+    codesign -v --force --timestamp --sign "$MACOS_SIGNING_SIGNATURE" SimpleDump-macOS-$1.dmg
 
     if [[ -n "$MACOS_NOTARIZATION_UN" && -n "$MACOS_NOTARIZATION_PWD" && -n "$MACOS_TEAM" ]]
     then
         echo "Notarizing DMG..."
-        xcrun notarytool submit SatDump-macOS-$1.dmg --apple-id $MACOS_NOTARIZATION_UN --password $MACOS_NOTARIZATION_PWD --team-id $MACOS_TEAM --wait
-        xcrun stapler staple SatDump-macOS-$1.dmg
+        xcrun notarytool submit SimpleDump-macOS-$1.dmg --apple-id $MACOS_NOTARIZATION_UN --password $MACOS_NOTARIZATION_PWD --team-id $MACOS_TEAM --wait
+        xcrun stapler staple SimpleDump-macOS-$1.dmg
     fi
 fi
 
 echo "Done!"
+
+

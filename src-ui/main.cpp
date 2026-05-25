@@ -98,16 +98,16 @@ int main(int argc, char *argv[])
     // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
-    window = glfwCreateWindow(1000, 600, std::string("SatDump v" + (std::string)SATDUMP_VERSION).c_str(), nullptr, nullptr);
+    window = glfwCreateWindow(1000, 600, std::string("SimpleDump v" + (std::string)SATDUMP_VERSION).c_str(), nullptr, nullptr);
     if (window == nullptr)
     {
         logger->warn("Could not init GLFW Window; falling back to OpenGL 2.1...");
         glfwDefaultWindowHints();
         fallback_gl = true;
-        window = glfwCreateWindow(1000, 600, std::string("SatDump v" + (std::string)SATDUMP_VERSION).c_str(), nullptr, nullptr);
+        window = glfwCreateWindow(1000, 600, std::string("SimpleDump v" + (std::string)SATDUMP_VERSION).c_str(), nullptr, nullptr);
         if (window == nullptr)
         {
-            pfd::message("SatDump", "Could not start SatDump UI. Please make sure your graphics card supports OpenGL 2.1 or newer",
+            pfd::message("SimpleDump", "Could not start SimpleDump UI. Please make sure your graphics card supports OpenGL 2.1 or newer",
                          pfd::choice::ok, pfd::icon::error);
             logger->critical("Could not init GLFW Window! Exiting");
             exit(1);

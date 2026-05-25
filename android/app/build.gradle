@@ -11,8 +11,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.satdump.SatDump"
-        namespace "org.satdump.SatDump"
+        applicationId "org.simpledump.SimpleDump"
+        namespace "org.simpledump.SimpleDump"
         minSdkVersion 26
         targetSdkVersion 28
         versionCode 8
@@ -74,7 +74,7 @@ task copyPipelines(type: Copy) {
 
 task copyCfg(type: Copy) {
     description = 'Copy config...'
-    from '../../satdump_cfg.json'
+    from '../../simpledump_cfg.json'
     into 'assets/'
     include('*')
 }

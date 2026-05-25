@@ -15,10 +15,10 @@ cd vcpkg
 git checkout ad3bae5
 if [[ "$(uname -m)" == "arm64" ]]
 then
-    cp ../macOS/arm64-osx-satdump.cmake triplets/osx-satdump.cmake
+    cp ../macOS/arm64-osx-simpledump.cmake triplets/osx-simpledump.cmake
     osx_target="11.0"
 else
-    cp ../macOS/x64-osx-satdump.cmake triplets/osx-satdump.cmake
+    cp ../macOS/x64-osx-simpledump.cmake triplets/osx-simpledump.cmake
     osx_target="10.15"
 fi
 ./bootstrap-vcpkg.sh
@@ -26,23 +26,21 @@ fi
 echo "Installing vcpkg packages..."
 
 # Core packages. libxml2 is for libiio
-./vcpkg install --triplet osx-satdump libjpeg-turbo tiff libpng glfw3 libusb fftw3 libxml2 portaudio jemalloc nng zstd armadillo hdf5
+./vcpkg install --triplet osx-simpledump libjpeg-turbo tiff libpng glfw3 libusb fftw3 libxml2 portaudio jemalloc nng zstd armadillo hdf5
 
 # Entirely for UHD...
-./vcpkg install --triplet osx-satdump boost-chrono boost-date-time boost-filesystem boost-program-options boost-system boost-serialization boost-thread \
+./vcpkg install --triplet osx-simpledump boost-chrono boost-date-time boost-filesystem boost-program-options boost-system boost-serialization boost-thread \
                                       boost-test boost-format boost-asio boost-math boost-graph boost-units boost-lockfree boost-circular-buffer        \
                                       boost-assign boost-dll
 
 # Remove nested symlinks on known problematic libs
 for dylib in libz.dylib libzstd.dylib libhdf5.dylib libhdf5_hl.dylib
 do
-    target_dylib=$(readlink installed/osx-satdump/lib/$dylib)
-    final_dylib=$(readlink installed/osx-satdump/lib/$target_dylib)
+    target_dylib=$(readlink installed/osx-simpledump/lib/$dylib)
+    final_dylib=$(readlink installed/osx-simpledump/lib/$target_dylib)
     if [[ -n final_dylib ]]
     then
-        mv installed/osx-satdump/lib/$final_dylib installed/osx-satdump/lib/$target_dylib
-    fi
-done
+        mv installed/osx-simpledump/lib/$final_dylib installed/osx-simpledump/lib/$target_dylib
 
 mkdir build && cd build
 
@@ -52,9 +50,9 @@ python3 -m venv venv
 source venv/bin/activate
 pip3 install mako
 
-build_args="-DCMAKE_TOOLCHAIN_FILE=$(cd ../scripts/buildsystems && pwd)/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=osx-satdump -DCMAKE_INSTALL_PREFIX=$(cd ../installed/osx-satdump && pwd) -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_DEPLOYMENT_TARGET=$osx_target -DCMAKE_MACOSX_RPATH=ON"
-libusb_include="$(cd ../installed/osx-satdump/include/libusb-1.0 && pwd)"
-libusb_lib="$(cd ../installed/osx-satdump/lib && pwd)/libusb-1.0.0.dylib"
+build_args="-DCMAKE_TOOLCHAIN_FILE=$(cd ../scripts/buildsystems && pwd)/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=osx-simpledump -DCMAKE_INSTALL_PREFIX=$(cd ../installed/osx-simpledump && pwd) -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_DEPLOYMENT_TARGET=$osx_target -DCMAKE_MACOSX_RPATH=ON"
+libusb_include="$(cd ../installed/osx-simpledump/include/libusb-1.0 && pwd)"
+libusb_lib="$(cd ../installed/osx-simpledump/lib && pwd)/libusb-1.0.0.dylib"
 
 echo "Building OpenMP"
 mkdir libomp && cd libomp
@@ -74,7 +72,7 @@ rm -rf libomp
 echo "Building orc"
 git clone https://github.com/GStreamer/orc --depth 1 -b 0.4.38
 cd orc
-MACOSX_DEPLOYMENT_TARGET=$osx_target meson setup --buildtype=release --prefix=$(cd ../../installed/osx-satdump && pwd) -Dgtk_doc=disabled build
+MACOSX_DEPLOYMENT_TARGET=$osx_target meson setup --buildtype=release --prefix=$(cd ../../installed/osx-simpledump && pwd) -Dgtk_doc=disabled build
 MACOSX_DEPLOYMENT_TARGET=$osx_target meson compile -C build --verbose
 MACOSX_DEPLOYMENT_TARGET=$osx_target meson install -C build
 cd ..
@@ -196,11 +194,11 @@ cd ../../..
 rm -rf uhd
 
 echo "Adding SDRPlay Library..."
-curl -LJ --output sdrplay-macos.zip https://www.satdump.org/sdrplay-macos.zip
+curl -LJ --output sdrplay-macos.zip https://www.simpledump.org/sdrplay-macos.zip
 unzip sdrplay-macos.zip
-cp sdrplay-macos/lib/* ../installed/osx-satdump/lib
-cp sdrplay-macos/include/* ../installed/osx-satdump/include
-cd ../installed/osx-satdump/lib
+cp sdrplay-macos/lib/* ../installed/osx-simpledump/lib
+cp sdrplay-macos/include/* ../installed/osx-simpledump/include
+cd ../installed/osx-simpledump/lib
 ln -s libsdrplay_api.3.15.dylib libsdrplay_api.dylib
 cd -
 rm -rf sdrplay-macos*

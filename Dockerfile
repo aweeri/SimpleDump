@@ -11,7 +11,7 @@ RUN apt -y update && \
     apt -y upgrade && \
     xargs -a packages.builder apt install --no-install-recommends -qy
 
-WORKDIR /usr/local/src/satdump
+WORKDIR /usr/local/src/simpledump
 COPY . .
 
 RUN cmake -B build \
@@ -29,23 +29,23 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
 COPY packages.runner /usr/local/src/
-COPY --from=builder /usr/local/src/satdump/build/satdump_*.deb /usr/local/src/
+COPY --from=builder /usr/local/src/simpledump/build/simpledump_*.deb /usr/local/src/
 RUN apt -y update && \
     apt -y upgrade && \
     xargs -a /usr/local/src/packages.runner apt install -qy && \
-    apt install -qy /usr/local/src/satdump_*.deb && \
+    apt install -qy /usr/local/src/simpledump_*.deb && \
     rm -rf /var/lib/apt/lists/*
 
 # Add a user, possibility to map it to a user on the host to get the same uid & gid on files
 ARG HOST_UID=1000
 ARG HOST_GID=1000
-RUN groupadd -r -g ${HOST_GID} satdump && \
+RUN groupadd -r -g ${HOST_GID} simpledump && \
 	useradd -r -u ${HOST_UID} \
-            -g satdump \
+            -g simpledump \
             -d /srv \
             -s /bin/bash \
             -G audio,dialout,plugdev \
             -m \
-            satdump
-USER satdump
+            simpledump
+USER simpledump
 WORKDIR /srv

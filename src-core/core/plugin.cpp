@@ -76,8 +76,8 @@ void loadPlugins(std::map<std::string, std::shared_ptr<satdump::Plugin>> &loaded
 
 #ifdef __ANDROID__
             if (path.find("libandroid_imgui.so") != std::string::npos ||
-                path.find("libsatdump_core.so") != std::string::npos ||
-                path.find("libsatdump_interface.so") != std::string::npos)
+                path.find("libsimpledump_core.so") != std::string::npos ||
+                path.find("libsimpledump_interface.so") != std::string::npos)
                 goto skip_this;
 #endif
             try

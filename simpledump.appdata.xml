@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.satdump.satdump</id>
+  <id>org.simpledump.simpledump</id>
   
-  <name>satdump</name>
-  <summary>SatDump is a general purpose satellite data processing software</summary>
+  <name>SimpleDump</name>
+  <summary>SimpleDump is a general purpose satellite data processing software</summary>
   
   <metadata_license>GPL-3.0-or-later</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -17,13 +17,13 @@
   <launchable type="desktop-id">simpledump.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://www.satdump.org/assets/release_110/SatDump_autotrack.png</image>
+      <image>https://www.simpledump.org/assets/release_110/SimpleDump_autotrack.png</image>
     </screenshot>
     <screenshot>
-      <image>https://github.com/SatDump/SatDump/blob/master/gui_recording.png</image>
+      <image>https://github.com/SimpleDump/SimpleDump/blob/master/gui_recording.png</image>
     </screenshot>
     <screenshot>
-      <image>https://github.com/SatDump/SatDump/blob/master/cli_example.png</image>
+      <image>https://github.com/SimpleDump/SimpleDump/blob/master/cli_example.png</image>
     </screenshot>
   </screenshots>
 </component>

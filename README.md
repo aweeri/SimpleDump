@@ -26,11 +26,11 @@ make -j`nproc`
 # To run without installing
 ln -s ../pipelines .        # Symlink pipelines so it can run
 ln -s ../resources .        # Symlink resources so it can run
-ln -s ../satdump_cfg.json . # Symlink settings so it can run
+ln -s ../simpledump_cfg.json . # Symlink the configuration file so it can run
 
 # To install system-wide
 sudo make install
 
 # Run (if you want!)
-./satdump-ui
+./simpledump-ui
 ```

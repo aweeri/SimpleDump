@@ -1,13 +1,13 @@
 ---
 name: Feature request
-about: Suggest a feature/improvement to SatDump
+about: Suggest a feature/improvement to SimpleDump
 title: ''
 labels: enhancement
 assignees: ''
 
 ---
 
-**What would you want to be added to satdump?**
+**What would you want to be added to SimpleDump?**
 A clear and concise description of what the idea/problem is.
 
 **Describe the feature you'd like to have**

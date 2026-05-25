@@ -30,46 +30,46 @@ namespace satdump
         logger->info(" ___/ / /_/ / /_/ /_/ / /_/ / / / / / / /_/ /");
         logger->info("/____/\\__,_/\\__/_____/\\__,_/_/ /_/ /_/ .___/ ");
         logger->info("                                    /_/      ");
-        logger->info("Starting SatDump v" + (std::string)SATDUMP_VERSION);
+        logger->info("Starting SimpleDump v" + (std::string)SATDUMP_VERSION);
         logger->info("");
 
 #ifdef _WIN32
-        if (std::filesystem::exists("satdump_cfg.json"))
+        if (std::filesystem::exists("simpledump_cfg.json"))
             user_path = "./config";
         else 
-            user_path = std::string(getenv("APPDATA")) + "/satdump";
+            user_path = std::string(getenv("APPDATA")) + "/simpledump";
 #elif __ANDROID__
         user_path = ".";
 #else
-        user_path = std::string(getenv("HOME")) + "/.config/satdump";
+        user_path = std::string(getenv("HOME")) + "/.config/simpledump";
 #endif
 
         try
         {
-            if (std::filesystem::exists("satdump_cfg.json"))
-                config::loadConfig("satdump_cfg.json", user_path);
+            if (std::filesystem::exists("simpledump_cfg.json"))
+                config::loadConfig("simpledump_cfg.json", user_path);
             else
-                config::loadConfig(satdump::RESPATH + "satdump_cfg.json", user_path);
+                config::loadConfig(satdump::RESPATH + "simpledump_cfg.json", user_path);
         }
         catch (std::exception &e)
         {
-            logger->critical("Error loading SatDump config! SatDump will now exit. Error:\n%s", e.what());
+            logger->critical("Error loading SimpleDump config! SimpleDump will now exit. Error:\n%s", e.what());
             if(is_gui)
-                pfd::message("SatDump", "Error loading SatDump config! SatDump will now exit. Error:\n\n" +
+                pfd::message("SimpleDump", "Error loading SimpleDump config! SimpleDump will now exit. Error:\n\n" +
                     std::string(e.what()), pfd::choice::ok, pfd::icon::error);
             exit(1);
         }
 
-        if (config::main_cfg["satdump_general"].contains("log_to_file"))
+        if (config::main_cfg["simpledump_general"].contains("log_to_file"))
         {
-            bool log_file = config::main_cfg["satdump_general"]["log_to_file"]["value"];
+            bool log_file = config::main_cfg["simpledump_general"]["log_to_file"]["value"];
             if (log_file)
                 initFileSink();
         }
 
-        if (config::main_cfg["satdump_general"].contains("log_level"))
+        if (config::main_cfg["simpledump_general"].contains("log_level"))
         {
-            std::string log_level = config::main_cfg["satdump_general"]["log_level"]["value"];
+            std::string log_level = config::main_cfg["simpledump_general"]["log_level"]["value"];
             if (log_level == "trace")
                 setConsoleLevel(slog::LOG_TRACE);
             else if (log_level == "debug")
@@ -110,9 +110,9 @@ namespace satdump
         // TLEs
         if (tle_file_override == "")
         {
-            loadTLEFileIntoRegistry(user_path + "/satdump_tles.txt");
+            loadTLEFileIntoRegistry(user_path + "/simpledump_tles.txt");
             if (tle_do_update_on_init)
-                autoUpdateTLE(user_path + "/satdump_tles.txt");
+                autoUpdateTLE(user_path + "/simpledump_tles.txt");
         }
         else
         {
@@ -148,7 +148,7 @@ namespace satdump
         logger->error("██║  ██║██╔══██║██║╚██╗██║██║   ██║██╔══╝  ██╔══██╗");
         logger->error("██████╔╝██║  ██║██║ ╚████║╚██████╔╝███████╗██║  ██║");
         logger->error("╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝");
-        logger->error("SatDump has NOT been built in Release mode.");
+        logger->error("SimpleDump has NOT been built in Release mode.");
         logger->error("If you are not a developer but intending to use the software,");
         logger->error("you probably do not want this. If so, make sure to");
         logger->error("specify -DCMAKE_BUILD_TYPE=Release in CMake.");

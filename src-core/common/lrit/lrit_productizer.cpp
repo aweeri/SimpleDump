@@ -44,7 +44,7 @@ namespace lrit
         : should_sweep_x(sweep_x), instrument_id(instrument_id), compo_cache_path(cache_path)
     {
         if (satdump::config::main_cfg["viewer"]["instruments"].contains(instrument_id) &&
-            satdump::config::main_cfg["satdump_general"]["auto_process_products"]["value"].get<bool>())
+            satdump::config::main_cfg["simpledump_general"]["auto_process_products"]["value"].get<bool>())
             can_make_composites = true;
 
         if (can_make_composites)

@@ -11,7 +11,7 @@ if(MSVC OR BUILD_MSVC)
     set(VCPKG_APPLOCAL_DEPS CACHE BOOL FALSE)
 endif()
 
-project(SatDump)
+project(SimpleDump)
 
 option(BUILD_GUI "Build the GUI" ON)
 option(BUILD_TESTING "Build the testing program" OFF)
@@ -44,7 +44,7 @@ endif()
 
 if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-    link_directories(vcpkg/installed/osx-satdump/lib)
+    link_directories(vcpkg/installed/osx-simpledump/lib)
 
     # Jemalloc
     find_package(Jemalloc REQUIRED)
@@ -114,7 +114,7 @@ if(MSVC OR BUILD_MSVC)
     link_directories(vcpkg/installed/${VCPKG_TARGET_TRIPLET}/lib)
 endif()
 
-project(SatDump VERSION "1.2.2")
+project(SimpleDump VERSION "1.2.2")
 
 # Check if the current commit has a tag
 execute_process(
@@ -156,7 +156,7 @@ if(NOT ANDROID)
 endif()
 
 if(OPENCL_FOUND AND BUILD_OPENCL)
-    message("OpenCL Found! SatDump will support accelerated GPU computing.")
+    message("OpenCL Found! SimpleDump will support accelerated GPU computing.")
 else()
     message("OpenCL NOT found or disabled!")
     set(BUILD_OPENCL OFF)
@@ -181,7 +181,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("██║  ██║██╔══██║██║╚██╗██║██║   ██║██╔══╝  ██╔══██╗")
     message("██████╔╝██║  ██║██║ ╚████║╚██████╔╝███████╗██║  ██║")
     message("╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝")
-    message("Building SatDump in Debug mode!")
+    message("Building SimpleDump in Debug mode!")
     message("")
 endif()
 
@@ -216,14 +216,14 @@ add_subdirectory(plugins)
 
 # Install configuration
 if((NOT ANDROID) AND ENABLE_INSTALL)
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/pipelines DESTINATION share/satdump)
-    install(DIRECTORY ${CMAKE_SOURCE_DIR}/resources DESTINATION share/satdump)
-    install(FILES ${CMAKE_SOURCE_DIR}/satdump_cfg.json DESTINATION share/satdump)
-    install(FILES ${CMAKE_SOURCE_DIR}/icon.png DESTINATION share/satdump)
-    configure_file(${CMAKE_SOURCE_DIR}/satdump.desktop ${CMAKE_CURRENT_BINARY_DIR}/satdump.desktop @ONLY)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/pipelines DESTINATION share/simpledump)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/resources DESTINATION share/simpledump)
+    install(FILES ${CMAKE_SOURCE_DIR}/simpledump_cfg.json DESTINATION share/simpledump)
+    install(FILES ${CMAKE_SOURCE_DIR}/icon.png DESTINATION share/simpledump)
+    configure_file(${CMAKE_SOURCE_DIR}/simpledump.desktop ${CMAKE_CURRENT_BINARY_DIR}/simpledump.desktop @ONLY)
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/satdump.desktop DESTINATION share/applications)
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledump.desktop DESTINATION share/applications)
     endif()
 
     # Create uninstall target
@@ -231,9 +231,9 @@ if((NOT ANDROID) AND ENABLE_INSTALL)
     add_custom_target(uninstall ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
     # CPack Configuration
-    set(CPACK_PACKAGE_NAME ${PROJECT_NAME} CACHE STRING "satdump-${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_NAME ${PROJECT_NAME} CACHE STRING "simpledump-${PROJECT_VERSION}")
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A satellite data processing software" CACHE STRING "")
-    set(CPACK_PACKAGE_VENDOR "SatDump")
+    set(CPACK_PACKAGE_VENDOR "SimpleDump")
     set(CPACK_PACKAGE_CONTACT "Aang23")
 
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "libfftw3-bin, libvolk-bin | libvolk2-bin, libpng16-16, libnng1, librtlsdr0 | librtlsdr2, libhackrf0, libairspy0, libairspyhf1, libglfw3 | libglfw3-wayland, libzstd1, libjemalloc2 | libjemalloc1, libportaudiocpp0, libhdf5-hl-100t64 | libhdf5-hl-100 | libhdf5-103 | libhdf5-100")
@@ -266,21 +266,21 @@ if((NOT ANDROID) AND ENABLE_INSTALL)
 
         # Generate Installer
         set(CPACK_GENERATOR NSIS)
-        set(CPACK_PACKAGE_INSTALL_DIRECTORY SatDump)
+        set(CPACK_PACKAGE_INSTALL_DIRECTORY SimpleDump)
         set(CPACK_NSIS_MANIFEST_DPI_AWARE ON)
         set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
         set(CPACK_NSIS_MODIFY_PATH ON)
-        set(CPACK_NSIS_BRANDING_TEXT "SatDump - General Purpose Satellite Data Processor")
+        set(CPACK_NSIS_BRANDING_TEXT "SimpleDump - General Purpose Satellite Data Processor")
         set(CPACK_NSIS_MUI_HEADERIMAGE "${PROJECT_SOURCE_DIR}\\\\windows\\\\installer-header.bmp")
         set(CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}\\\\windows\\\\icon.ico")
         if(BUILD_GUI)
-            set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\satdump-ui.exe")
-            set(CPACK_PACKAGE_EXECUTABLES ${CPACK_PACKAGE_EXECUTABLES} "satdump-ui" "SatDump")
-            list(APPEND CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut \\\"$DESKTOP\\\\SatDump.lnk\\\" \\\"$INSTDIR\\\\bin\\\\satdump-ui.exe\\\"")
-            list(APPEND CPACK_NSIS_DELETE_ICONS_EXTRA "Delete \\\"$DESKTOP\\\\SatDump.lnk\\\"")
+            set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\simpledump-ui.exe")
+            set(CPACK_PACKAGE_EXECUTABLES ${CPACK_PACKAGE_EXECUTABLES} "simpledump-ui" "SimpleDump")
+            list(APPEND CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut \"$DESKTOP\\SimpleDump.lnk\" \"$INSTDIR\\bin\\simpledump-ui.exe\"")
+            list(APPEND CPACK_NSIS_DELETE_ICONS_EXTRA "Delete \"$DESKTOP\\SimpleDump.lnk\"")
         endif()
         if(PLUGIN_REMOTE_SDR_SUPPORT)
-            set(CPACK_PACKAGE_EXECUTABLES ${CPACK_PACKAGE_EXECUTABLES} "satdump_sdr_server" "SatDump SDR Server")
+            set(CPACK_PACKAGE_EXECUTABLES ${CPACK_PACKAGE_EXECUTABLES} "simpledump_sdr_server" "SimpleDump SDR Server")
         endif()
 
         install(RUNTIME_DEPENDENCY_SET satdump_deps
@@ -292,8 +292,8 @@ if((NOT ANDROID) AND ENABLE_INSTALL)
                 "^vc.*"
                 "^msvcp.*"
                 "^concrt.*"
-                "satdump_core.dll"
-                "satdump_interface.dll"
+                "simpledump_core.dll"
+                "simpledump_interface.dll"
             POST_EXCLUDE_REGEXES
             ".*system32/.*\\.dll"
             DIRECTORIES

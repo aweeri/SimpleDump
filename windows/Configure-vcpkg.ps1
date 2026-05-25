@@ -207,7 +207,7 @@ rm -recurse -force libad9361-iio
 if($platform -eq "x64-windows" -or $platform -eq "x86-windows")
 {
     Write-Output "Building LimeSuite..."
-    Invoke-WebRequest -Uri "https://www.satdump.org/FX3-SDK.zip" -OutFile FX3-SDK.zip
+    Invoke-WebRequest -Uri "https://www.simpledump.org/FX3-SDK.zip" -OutFile FX3-SDK.zip
     Expand-Archive FX3-SDK.zip .
     $fx3_arg = "-DFX3_SDK_PATH=$($(Get-Item .\FX3-SDK).FullName)"
     git clone https://github.com/myriadrf/LimeSuite --depth 1 -b v23.11.0
@@ -255,7 +255,7 @@ cd ..
 rm -recurse -force build
 
 #Install SDRPlay API
-Invoke-WebRequest -Uri "https://www.satdump.org/SDRPlay.zip" -OutFile sdrplay.zip
+Invoke-WebRequest -Uri "https://www.simpledump.org/SDRPlay.zip" -OutFile sdrplay.zip
 mkdir sdrplay | Out-Null
 Expand-Archive sdrplay.zip .
 cp sdrplay\API\inc\*.h installed\$platform\include

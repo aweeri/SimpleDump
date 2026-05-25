@@ -1,4 +1,4 @@
-PROJECT_NAME           = SatDump
+PROJECT_NAME           = SimpleDump
 OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/documentation/
 INPUT                  = src-core/common/image \
                          src-core/common/geodetic \

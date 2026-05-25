@@ -6,7 +6,7 @@
 #include <filesystem>
 #ifdef __ANDROID__
 #include <android/log.h>
-static char ag_LogTag[] = "SatDump";
+static char ag_LogTag[] = "SimpleDump";
 #endif
 #if defined(_WIN32)
 #include <windows.h>
@@ -323,7 +323,7 @@ void initFileSink()
 
         //Create new log
         strftime(timebuffer, sizeof(timebuffer), "%Y%m%dT%H%M%S", timeinfo);
-        file_sink = std::make_shared<slog::FileSink>(satdump::user_path + "/satdump-" + std::string(timebuffer));
+        file_sink = std::make_shared<slog::FileSink>(satdump::user_path + "/simpledump-" + std::string(timebuffer));
         logger->add_sink(file_sink);
         // file_sink->set_pattern("[%D - %T] (%L) %v");
         file_sink->set_level(slog::LOG_TRACE);

@@ -195,7 +195,7 @@ namespace satdump
 
         // We are done. Does this have a dataset?
         if (std::filesystem::exists(output_directory + "/dataset.json") &&
-            config::main_cfg["satdump_general"]["auto_process_products"]["value"].get<bool>())
+            config::main_cfg["simpledump_general"]["auto_process_products"]["value"].get<bool>())
         {
             logger->debug("Products processing is enabled! Starting processing module.");
 
