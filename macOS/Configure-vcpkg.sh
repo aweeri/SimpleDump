@@ -194,7 +194,7 @@ cd ../../..
 rm -rf uhd
 
 echo "Adding SDRPlay Library..."
-curl -LJ --output sdrplay-macos.zip https://www.simpledump.org/sdrplay-macos.zip
+curl -LJ --output sdrplay-macos.zip https://www.satdump.org/sdrplay-macos.zip
 unzip sdrplay-macos.zip
 cp sdrplay-macos/lib/* ../installed/osx-simpledump/lib
 cp sdrplay-macos/include/* ../installed/osx-simpledump/include

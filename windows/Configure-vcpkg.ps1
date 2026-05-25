@@ -61,21 +61,39 @@ if($env:PROCESSOR_ARCHITECTURE -ne $arch)
 #Setup vcpkg
 Write-Output "Configuring vcpkg..."
 cd "$(Split-Path -Parent $MyInvocation.MyCommand.Path)\.."
-git clone https://github.com/microsoft/vcpkg
+git clone https://github.com/microsoft/vcpkg -b 2025.01.13
 cd vcpkg
-git checkout 68d3499
 .\bootstrap-vcpkg.bat
 
+# New CMake version enforces policies that break compatibility with some older CMakeLists.txt files. Patch them here to avoid build failures.
+Write-Output "Patching legacy libraries for modern CMake compatibility..."
+
+(Get-Content -raw .\ports\openblas\portfile.cmake) -replace '(?s)(vcpkg_cmake_configure\(.*?OPTIONS)', '$1 -DCMAKE_POLICY_VERSION_MINIMUM=3.5' | Set-Content -Encoding ASCII .\ports\openblas\portfile.cmake
+
+(Get-Content -raw .\ports\fftw3\portfile.cmake) -replace '(?s)(vcpkg_cmake_configure\(.*?OPTIONS)', '$1 -DCMAKE_POLICY_VERSION_MINIMUM=3.5' | Set-Content -Encoding ASCII .\ports\fftw3\portfile.cmake
+
+(Get-Content -raw .\ports\portaudio\portfile.cmake) -replace '(?s)(vcpkg_cmake_configure\(.*?OPTIONS)', '$1 -DCMAKE_POLICY_VERSION_MINIMUM=3.5' | Set-Content -Encoding ASCII .\ports\portaudio\portfile.cmake
+
+$lapack_patch = @"
+file(GLOB_RECURSE CMAKE_FILES "`${SOURCE_PATH}/CMakeLists.txt" "`${SOURCE_PATH}/*.cmake")
+foreach(CMAKE_FILE IN LISTS CMAKE_FILES)
+    file(READ "`${CMAKE_FILE}" _contents)
+    string(REGEX REPLACE "cmake_minimum_required[ \t]*\\([^\\)]+\\)" "cmake_minimum_required(VERSION 3.5)" _contents "`${_contents}")
+    file(WRITE "`${CMAKE_FILE}" "`${_contents}")
+endforeach()
+
+vcpkg_cmake_configure(
+"@
+(Get-Content -raw .\ports\lapack-reference\portfile.cmake) -replace 'vcpkg_cmake_configure\s*\(', $lapack_patch | Set-Content -Encoding ASCII .\ports\lapack-reference\portfile.cmake
+
+
 # Core packages. libxml2 is for libiio
-.\vcpkg install --triplet $platform pthreads libjpeg-turbo tiff libpng glfw3 libusb fftw3 libxml2 portaudio nng zstd armadillo opencl curl[schannel] hdf5
+.\vcpkg install --triplet $platform pthreads libjpeg-turbo tiff libpng glfw3 libusb fftw3 libxml2 portaudio nng zstd armadillo opencl curl[schannel] hdf5[cpp] sqlite3
 
 # Entirely for UHD...
-if($platform -eq "x64-windows" -or $platform -eq "x86-windows")
-{
-    .\vcpkg install --triplet $platform boost-chrono boost-date-time boost-filesystem boost-program-options boost-system boost-serialization boost-thread `
-                                        boost-test boost-format boost-asio boost-math boost-graph boost-units boost-lockfree boost-circular-buffer        `
-                                        boost-assign boost-dll
-}
+.\vcpkg install --triplet $platform boost-chrono boost-date-time boost-filesystem boost-program-options boost-system boost-serialization boost-thread `
+                                    boost-test boost-format boost-asio boost-math boost-graph boost-units boost-lockfree boost-circular-buffer        `
+                                    boost-assign boost-dll
 
 #Start Building Dependencies
 $null = mkdir build
@@ -95,6 +113,7 @@ if($env:PROCESSOR_ARCHITECTURE -ne $arch)
 Write-Output "Building libusb..."
 git clone https://github.com/HannesFranke-smartoptics/libusb -b raw_io_v2
 cd libusb\msvc
+(Get-Content -raw Base.props) -replace "<TreatWarningAsError>true</TreatWarningAsError>", "<TreatWarningAsError>false</TreatWarningAsError>" | Set-Content -Encoding ASCII Base.props
 msbuild -m -v:m -p:Platform=$generator,Configuration=Release .\libusb.sln
 msbuild -m -v:m -p:Platform=$generator,Configuration=Debug .\libusb.sln
 $toolset_used=$(get-childitem ..\build\)[0].Name
@@ -109,13 +128,12 @@ cd ..\..
 rm -recurse -force libusb
 
 Write-Output "Building cpu_features..."
-git clone https://github.com/google/cpu_features # -b 0.9.1 (not released as of this writing)
+git clone https://github.com/google/cpu_features -b v0.10.1
 cd cpu_features
-git checkout 6aecde5
 $null = mkdir build
 cd build
 cmake $build_args -DBUILD_TESTING=OFF -DBUILD_EXECUTABLE=OFF ..
-cmake --build . --config Release
+cmake --build . --config Release --parallel
 cmake --install .
 cd ..\..
 rm -recurse -force cpu_features
@@ -136,6 +154,7 @@ Write-Output "Building Airspy..."
 #git clone https://github.com/airspy/airspyone_host --depth 1 #-b v1.0.10
 git clone https://github.com/JVital2013/airspyone_host -b rawio #Enables RAW_IO to avoid sample drops
 cd airspyone_host\libairspy
+(Get-Content -raw CMakeLists.txt) -replace 'cmake_minimum_required\s*\(.*?\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content -Encoding ASCII CMakeLists.txt
 $null = mkdir build
 cd build
 cmake $build_args -DLIBUSB_INCLUDE_DIR="$($libusb_include)" -DLIBUSB_LIBRARIES="$($libusb_lib)" -DTHREADS_PTHREADS_WIN32_LIBRARY="$($pthread_lib)" ..
@@ -148,6 +167,7 @@ Write-Output "Building Airspy HF..."
 #git clone https://github.com/airspy/airspyhf --depth 1 #-b 1.6.8
 git clone https://github.com/JVital2013/airspyhf -b rawio #Enables RAW_IO to avoid sample drops
 cd airspyhf\libairspyhf
+(Get-Content -raw CMakeLists.txt) -replace 'cmake_minimum_required\s*\(.*?\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content -Encoding ASCII CMakeLists.txt
 $null = mkdir build
 cd build
 cmake $build_args -DLIBUSB_INCLUDE_DIR="$($libusb_include)" -DLIBUSB_LIBRARIES="$($libusb_lib)" -DTHREADS_PTHREADS_WIN32_LIBRARY="$($pthread_lib)" ..
@@ -160,6 +180,7 @@ Write-Output "Building RTL-SDR..."
 #git clone https://github.com/osmocom/rtl-sdr --depth 1 -b v2.0.2
 git clone https://github.com/JVital2013/librtlsdr -b rawio #Enables RAW_IO to avoid sample drops
 cd librtlsdr
+(Get-Content -raw CMakeLists.txt) -replace 'cmake_minimum_required\s*\(.*?\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content -Encoding ASCII CMakeLists.txt
 $null = mkdir build
 cd build
 cmake $build_args -DLIBUSB_INCLUDE_DIRS="$($libusb_include)" -DLIBUSB_LIBRARIES="$($libusb_lib)" -DTHREADS_PTHREADS_INCLUDE_DIR="$($standard_include)" -DTHREADS_PTHREADS_LIBRARY="$($pthread_lib)" ..
@@ -172,6 +193,7 @@ Write-Output "Building HackRF..."
 #git clone https://github.com/greatscottgadgets/hackrf --depth 1 -b v2024.02.1
 git clone https://github.com/JVital2013/hackrf -b rawio #Enables RAW_IO to avoid sample drops
 cd hackrf\host\libhackrf
+(Get-Content -raw CMakeLists.txt) -replace 'cmake_minimum_required\s*\(.*?\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content -Encoding ASCII CMakeLists.txt
 $null = mkdir build
 cd build
 cmake $build_args -DLIBUSB_INCLUDE_DIR="$($libusb_include)" -DLIBUSB_LIBRARIES="$($libusb_lib)" -DTHREADS_PTHREADS_WIN32_LIBRARY="$($pthread_lib)" ..
@@ -195,6 +217,7 @@ rm -recurse -force libiio
 Write-Output "Building libad9361-iio..."
 git clone https://github.com/analogdevicesinc/libad9361-iio --depth 1 -b v0.3
 cd libad9361-iio
+(Get-Content -raw CMakeLists.txt) -replace 'cmake_minimum_required\s*\(.*?\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content -Encoding ASCII CMakeLists.txt
 $null = mkdir build
 cd build
 cmake $build_args -DLIBIIO_LIBRARIES="$($(Get-Item ..\..\..\installed\$platform\lib\libiio.lib).FullName)" -DENABLE_PACKAGING=OFF ..
@@ -207,10 +230,10 @@ rm -recurse -force libad9361-iio
 if($platform -eq "x64-windows" -or $platform -eq "x86-windows")
 {
     Write-Output "Building LimeSuite..."
-    Invoke-WebRequest -Uri "https://www.simpledump.org/FX3-SDK.zip" -OutFile FX3-SDK.zip
+    Invoke-WebRequest -Uri "https://www.satdump.org/FX3-SDK.zip" -OutFile FX3-SDK.zip
     Expand-Archive FX3-SDK.zip .
     $fx3_arg = "-DFX3_SDK_PATH=$($(Get-Item .\FX3-SDK).FullName)"
-    git clone https://github.com/myriadrf/LimeSuite --depth 1 -b v23.11.0
+    git clone https://github.com/myriadrf/LimeSuite #--depth 1 -b v23.11.0
     cd LimeSuite
     $null = mkdir build-dir
     cd build-dir
@@ -240,7 +263,7 @@ if($platform -eq "x64-windows" -or $platform -eq "x86-windows")
 {
     rm -recurse -force FX3-SDK, FX3-SDK.zip
     Write-Output "Building UHD..."
-    git clone https://github.com/EttusResearch/uhd --depth 1 -b v4.7.0.0
+    git clone https://github.com/EttusResearch/uhd #--depth 1 -b v4.7.0.0
     cd uhd\host
     $null = mkdir build
     cd build
@@ -255,7 +278,7 @@ cd ..
 rm -recurse -force build
 
 #Install SDRPlay API
-Invoke-WebRequest -Uri "https://www.simpledump.org/SDRPlay.zip" -OutFile sdrplay.zip
+Invoke-WebRequest -Uri "https://www.satdump.org/SDRPlay.zip" -OutFile sdrplay.zip
 mkdir sdrplay | Out-Null
 Expand-Archive sdrplay.zip .
 cp sdrplay\API\inc\*.h installed\$platform\include
