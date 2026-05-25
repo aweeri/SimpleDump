@@ -4,7 +4,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
 # We need those to be available for plugins!
 include_directories(../src-core ../src-interface)
 
-option(PLUGINS_ALL "Enable all plugins by default" ON)
+option(PLUGINS_ALL "Enable all plugins by default" OFF)
 
 option(PLUGIN_SPACEX "Enable the SpaceX support plugin" OFF)
 
@@ -21,63 +21,63 @@ if(PLUGIN_SPACEX OR PLUGINS_ALL)
   add_subdirectory(spacex_support)
 endif()
 
-option(PLUGIN_FY2 "Enable the FengYun-2 (S-VISSR, etc) support plugin" OFF)
+option(PLUGIN_FY2 "Enable the FengYun-2 (S-VISSR, etc) support plugin" ON)
 
 if(PLUGIN_FY2 OR PLUGINS_ALL)
   add_subdirectory(fengyun2_support)
 endif()
 
 option(PLUGIN_FY3 "Enable the FengYun-3 (AHRPT, MPT, DPT, etc) support plugin"
-       OFF)
+       ON)
 
 if(PLUGIN_FY3 OR PLUGINS_ALL)
   add_subdirectory(fengyun3_support)
 endif()
 
-option(PLUGIN_FY4 "Enable the FengYun-4 (LRIT, HRIT) support plugin" OFF)
+option(PLUGIN_FY4 "Enable the FengYun-4 (LRIT, HRIT) support plugin" ON)
 
 if(PLUGIN_FY4 OR PLUGINS_ALL)
   add_subdirectory(fengyun4_support)
 endif()
 
-option(PLUGIN_PROBA "Enable the Proba (1, 2, V, etc) support plugin" OFF)
+option(PLUGIN_PROBA "Enable the Proba (1, 2, V, etc) support plugin" ON)
 
 if(PLUGIN_PROBA OR PLUGINS_ALL)
   add_subdirectory(proba_support)
 endif()
 
-option(PLUGIN_EOS "Enable the EOS (Aqua, Terra, Aura) support plugin" OFF)
+option(PLUGIN_EOS "Enable the EOS (Aqua, Terra, Aura) support plugin" ON)
 
 if(PLUGIN_EOS OR PLUGINS_ALL)
   add_subdirectory(eos_support)
 endif()
 
-option(PLUGIN_METEOR "Enable the Meteor (HRPT, LRPT, etc) support plugin" OFF)
+option(PLUGIN_METEOR "Enable the Meteor (HRPT, LRPT, etc) support plugin" ON)
 
 if(PLUGIN_METEOR OR PLUGINS_ALL)
   add_subdirectory(meteor_support)
 endif()
 
-option(PLUGIN_JPSS "Enable the JPSS (SNPP, JPSS-1, etc) support plugin" OFF)
+option(PLUGIN_JPSS "Enable the JPSS (SNPP, JPSS-1, etc) support plugin" ON)
 
 if(PLUGIN_JPSS OR PLUGINS_ALL)
   add_subdirectory(jpss_support)
 endif()
 
-option(PLUGIN_GOES "Enable the GOES (GVAR, HRIT, GRB, etc) support plugin" OFF)
+option(PLUGIN_GOES "Enable the GOES (GVAR, HRIT, GRB, etc) support plugin" ON)
 
 if(PLUGIN_GOES OR PLUGINS_ALL)
   add_subdirectory(goes_support)
 endif()
 
 option(PLUGIN_ELEKTRO_ARKTIKA
-       "Enable the Elektro/Arktika (RDAS, xRIT, etc) support plugin" OFF)
+       "Enable the Elektro/Arktika (RDAS, xRIT, etc) support plugin" ON)
 
 if(PLUGIN_ELEKTRO_ARKTIKA OR PLUGINS_ALL)
   add_subdirectory(elektro_arktika_support)
 endif()
 
-option(PLUGIN_GK2A "Enable the GK2A (xRIT, etc) support plugin" OFF)
+option(PLUGIN_GK2A "Enable the GK2A (xRIT, etc) support plugin" ON)
 
 if(PLUGIN_GK2A OR PLUGINS_ALL)
   add_subdirectory(gk2a_support)
@@ -86,166 +86,166 @@ endif()
 option(
   PLUGIN_NOAA_METOP
   "Enable the NOAA/MetOp POES (AHRPT, HRPT, X-Band dumps, GAC, etc) support plugin"
-  OFF)
+  ON)
 
 if(PLUGIN_NOAA_METOP OR PLUGINS_ALL)
   add_subdirectory(noaa_metop_support)
 endif()
 
-option(PLUGIN_DMSP "Enable the DMSP support plugin" OFF)
+option(PLUGIN_DMSP "Enable the DMSP support plugin" ON)
 
 if(PLUGIN_DMSP OR PLUGINS_ALL)
   add_subdirectory(dmsp_support)
 endif()
 
-option(PLUGIN_JASON3 "Enable the Jason-3 (S-Band dumps) support plugin" OFF)
+option(PLUGIN_JASON3 "Enable the Jason-3 (S-Band dumps) support plugin" ON)
 
 if(PLUGIN_JASON3 OR PLUGINS_ALL)
   add_subdirectory(jason3_support)
 endif()
 
-option(PLUGIN_AIM "Enable the AIM support plugin" OFF)
+option(PLUGIN_AIM "Enable the AIM support plugin" ON)
 
 if(PLUGIN_AIM OR PLUGINS_ALL)
   add_subdirectory(aim_support)
 endif()
 
-option(PLUGIN_WSF "Enable the WSF (WSF-M) support plugin" OFF)
+option(PLUGIN_WSF "Enable the WSF (WSF-M) support plugin" ON)
 
 if(PLUGIN_WSF OR PLUGINS_ALL)
   add_subdirectory(wsf_support)
 endif()
 
-option(PLUGIN_AWS "Enable the AWS (Sterna) support plugin" OFF)
+option(PLUGIN_AWS "Enable the AWS (Sterna) support plugin" ON)
 
 if(PLUGIN_AWS OR PLUGINS_ALL)
   add_subdirectory(aws_support)
 endif()
 
-option(PLUGIN_MATS "Enable the MATS support plugin" OFF)
+option(PLUGIN_MATS "Enable the MATS support plugin" ON)
 
 if(PLUGIN_MATS OR PLUGINS_ALL)
   add_subdirectory(mats_support)
 endif()
 
-option(PLUGIN_HINODE "Enable the Hinode support plugin" OFF)
+option(PLUGIN_HINODE "Enable the Hinode support plugin" ON)
 
 if(PLUGIN_HINODE OR PLUGINS_ALL)
   add_subdirectory(hinode_support)
 endif()
 
-option(PLUGIN_OCEANSAT "Enable the Oceansat (X-Band, etc) support plugin" OFF)
+option(PLUGIN_OCEANSAT "Enable the Oceansat (X-Band, etc) support plugin" ON)
 
 if(PLUGIN_OCEANSAT OR PLUGINS_ALL)
   add_subdirectory(oceansat_support)
 endif()
 
-option(PLUGIN_LANDSAT "Enable the LandSat support plugin" OFF)
+option(PLUGIN_LANDSAT "Enable the LandSat support plugin" ON)
 
 if(PLUGIN_LANDSAT OR PLUGINS_ALL)
   add_subdirectory(landsat_support)
 endif()
 
-option(PLUGIN_HIMAWARI "Enable the Himawari (HimawariCast) support plugin" OFF)
+option(PLUGIN_HIMAWARI "Enable the Himawari (HimawariCast) support plugin" ON)
 
 if(PLUGIN_HIMAWARI OR PLUGINS_ALL)
   add_subdirectory(himawari_support)
 endif()
 
-option(PLUGIN_GEONETCAST "Enable the GeoNetCast support plugin" OFF)
+option(PLUGIN_GEONETCAST "Enable the GeoNetCast support plugin" ON)
 
 if(PLUGIN_GEONETCAST OR PLUGINS_ALL)
   add_subdirectory(geonetcast_support)
 endif()
 
-option(PLUGIN_BLUEWALKER3 "Enable the BlueWalker-3 support plugin" OFF)
+option(PLUGIN_BLUEWALKER3 "Enable the BlueWalker-3 support plugin" ON)
 
 if(PLUGIN_BLUEWALKER3 OR PLUGINS_ALL)
   add_subdirectory(bluewalker3_support)
 endif()
 
 option(PLUGIN_ANALOG
-       "Enable the support plugin for analog protocols such as NOAA APT" OFF)
+       "Enable the support plugin for analog protocols such as NOAA APT" ON)
 
 if(PLUGIN_ANALOG OR PLUGINS_ALL)
   add_subdirectory(analog_support)
 endif()
 
 option(PLUGIN_ORBCOMM "Enable the support plugin for the Orbcomm constellation"
-       OFF)
+       ON)
 
 if(PLUGIN_ORBCOMM OR PLUGINS_ALL)
   add_subdirectory(orbcomm_support)
 endif()
 
-option(PLUGIN_GCOM "Enable the support plugin for the GCOM satellites" OFF)
+option(PLUGIN_GCOM "Enable the support plugin for the GCOM satellites" ON)
 
 if(PLUGIN_GCOM OR PLUGINS_ALL)
   add_subdirectory(gcom_support)
 endif()
 
 option(PLUGIN_TUBSAT
-       "Enable the support plugin for the TUBSAT satellites (TUBIN, etc)" OFF)
+       "Enable the support plugin for the TUBSAT satellites (TUBIN, etc)" ON)
 
 if(PLUGIN_TUBSAT OR PLUGINS_ALL)
   add_subdirectory(tubsat_support)
 endif()
 
-option(PLUGIN_UMKA "Enable the support plugin for the UmKA satellite" OFF)
+option(PLUGIN_UMKA "Enable the support plugin for the UmKA satellite" ON)
 
 if(PLUGIN_UMKA OR PLUGINS_ALL)
   add_subdirectory(umka_support)
 endif()
 
-option(PLUGIN_DSCOVR "Enable the DSCOVR support plugin" OFF)
+option(PLUGIN_DSCOVR "Enable the DSCOVR support plugin" ON)
 
 if(PLUGIN_DSCOVR OR PLUGINS_ALL)
   add_subdirectory(dscovr_support)
 endif()
 
-option(PLUGIN_STEREO "Enable the support plugin for the STEREO probes" OFF)
+option(PLUGIN_STEREO "Enable the support plugin for the STEREO probes" ON)
 
 if(PLUGIN_STEREO OR PLUGINS_ALL)
   add_subdirectory(stereo_support)
 endif()
 
-option(PLUGIN_INMARSAT "Enable the support plugin for Inmarsat" OFF)
+option(PLUGIN_INMARSAT "Enable the support plugin for Inmarsat" ON)
 
 if(PLUGIN_INMARSAT OR PLUGINS_ALL)
   add_subdirectory(inmarsat_support)
 endif()
 
-option(PLUGIN_CUBESAT "Enable the support plugin for CubeSats" OFF)
+option(PLUGIN_CUBESAT "Enable the support plugin for CubeSats" ON)
 
 if(PLUGIN_CUBESAT OR PLUGINS_ALL)
   add_subdirectory(cubesat_support)
 endif()
 
-option(PLUGIN_OTHERS "Enable the support plugin for a few other random satellites" OFF)
+option(PLUGIN_OTHERS "Enable the support plugin for a few other random satellites" ON)
 
 if(PLUGIN_OTHERS OR PLUGINS_ALL)
   add_subdirectory(others_support)
 endif()
 
-option(PLUGIN_OFFICIAL_PRODUCTS "Enable the support plugin for official satellite products" OFF)
+option(PLUGIN_OFFICIAL_PRODUCTS "Enable the support plugin for official satellite products" ON)
 
 if(PLUGIN_OFFICIAL_PRODUCTS OR PLUGINS_ALL)
   add_subdirectory(official_products_support)
 endif()
 
-option(PLUGIN_DVB "Enable the support plugin for DVB Standards (DVB-S, DVB-S2)" OFF)
+option(PLUGIN_DVB "Enable the support plugin for DVB Standards (DVB-S, DVB-S2)" ON)
 
 if(PLUGIN_DVB OR PLUGINS_ALL)
   add_subdirectory(dvb_support)
 endif()
 
-option(PLUGIN_CLUSTER "Enable the CLUSTER support plugin" OFF)
+option(PLUGIN_CLUSTER "Enable the CLUSTER support plugin" ON)
 
 if(PLUGIN_CLUSTER OR PLUGINS_ALL)
   add_subdirectory(cluster_support)
 endif()
 
-option(PLUGIN_METEOSAT "Enable the Meteosat (MSG Raw data) support plugin" OFF)
+option(PLUGIN_METEOSAT "Enable the Meteosat (MSG Raw data) support plugin" ON)
 
 if(PLUGIN_METEOSAT OR PLUGINS_ALL)
   add_subdirectory(meteosat_support)
@@ -320,7 +320,7 @@ if(PLUGIN_BLADERF_SDR_SUPPORT)
   add_subdirectory(sdr_sources/bladerf_sdr_support)
 endif()
 
-option(PLUGIN_USRP_SDR_SUPPORT "Enable USRP SDR Support plugin" ON)
+option(PLUGIN_USRP_SDR_SUPPORT "Enable USRP SDR Support plugin" OFF)
 
 if(PLUGIN_USRP_SDR_SUPPORT)
   add_subdirectory(sdr_sources/usrp_sdr_support)
@@ -338,7 +338,7 @@ if(PLUGIN_MIRISDR_SDR_SUPPORT)
   add_subdirectory(sdr_sources/mirisdr_sdr_support)
 endif()
 
-option(PLUGIN_SPYSERVER_SUPPORT "Enable SpyServer Support plugin" ON)
+option(PLUGIN_SPYSERVER_SUPPORT "Enable SpyServer Support plugin" OFF)
 
 if(PLUGIN_SPYSERVER_SUPPORT)
   add_subdirectory(sdr_sources/spyserver_support)
@@ -380,7 +380,7 @@ if(PLUGIN_NET_SOURCE_SDR_SUPPORT)
   add_subdirectory(sdr_sources/net_source_support)
 endif()
 
-option(PLUGIN_REMOTE_SDR_SUPPORT "Enable Remote SDR Support plugin (WIP!)" ON)
+option(PLUGIN_REMOTE_SDR_SUPPORT "Enable Remote SDR Support plugin (WIP!)" OFF)
 
 if(PLUGIN_REMOTE_SDR_SUPPORT)
   add_subdirectory(sdr_sources/remote_sdr_support)
