@@ -387,7 +387,7 @@ jobs:
               if: steps.macos-deps-intel.outputs.cache-hit != 'true'
               working-directory: ${{runner.workspace}}/build
               shell: bash
-              run: $GITHUB_WORKSPACE/macOS/build_deps.sh
+              run: bash $GITHUB_WORKSPACE/macOS/build_deps.sh
 
             - name: Configure CMake
               working-directory: ${{runner.workspace}}/build
@@ -449,7 +449,7 @@ jobs:
               if: steps.macos-deps-silicon.outputs.cache-hit != 'true'
               working-directory: ${{runner.workspace}}/build
               shell: bash
-              run: $GITHUB_WORKSPACE/macOS/build_deps.sh
+              run: bash $GITHUB_WORKSPACE/macOS/build_deps.sh
 
             - name: Configure CMake
               working-directory: ${{runner.workspace}}/build
