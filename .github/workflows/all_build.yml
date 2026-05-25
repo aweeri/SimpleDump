@@ -357,6 +357,7 @@ jobs:
                   path: ${{runner.workspace}}/build/*.deb
 
     build_macos_intel:
+        if: false
         runs-on: macos-15-intel
 
         steps:
@@ -420,6 +421,7 @@ jobs:
                   path: ${{runner.workspace}}/build/*.dmg
 
     build_macos_silicon:
+        if: false
         runs-on: macos-15
         steps:
             - uses: actions/checkout@v4
