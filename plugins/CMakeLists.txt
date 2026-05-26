@@ -209,7 +209,7 @@ if(PLUGIN_STEREO OR PLUGINS_ALL)
   add_subdirectory(stereo_support)
 endif()
 
-option(PLUGIN_INMARSAT "Enable the support plugin for Inmarsat" ON)
+option(PLUGIN_INMARSAT "Enable the support plugin for Inmarsat" OFF)
 
 if(PLUGIN_INMARSAT OR PLUGINS_ALL)
   add_subdirectory(inmarsat_support)
