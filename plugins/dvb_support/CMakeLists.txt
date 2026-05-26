@@ -3,7 +3,7 @@ project(dvb_support)
 
 file(GLOB_RECURSE dvb_support_CPPS *.cpp)
 add_library(dvb_support SHARED ${dvb_support_CPPS})
-target_link_libraries(dvb_support PUBLIC simpledump_coreore)
+target_link_libraries(dvb_support PUBLIC simpledump_core)
 target_include_directories(dvb_support PUBLIC src .)
 
 # SSE41
