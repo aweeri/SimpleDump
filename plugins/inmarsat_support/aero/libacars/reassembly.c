@@ -4,8 +4,8 @@
  *  Copyright (c) 2018-2021 Tomasz Lemiech <szpajder@gmail.com>
  */
 
-#ifdef WIN32
-#else
+#include "config.h"                     // HAVE_SYS_TIME_H
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>                   // struct timeval
 #endif
 #include <string.h>                     // strdup

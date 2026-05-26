@@ -4,12 +4,12 @@
  *  Copyright (c) 2018-2021 Tomasz Lemiech <szpajder@gmail.com>
  */
 
+ #include "config.h"                 /* HAVE_SYS_TIME_H */
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>                 /* calloc() */
 #include <string.h>                 /* strchr(), strlen(), strncmp(), strcmp() */
-#ifdef WIN32
-#else
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>               /* struct timeval */
 #endif
 #include <aero/libacars/macros.h>        /* la_assert() */
