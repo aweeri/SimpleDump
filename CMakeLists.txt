@@ -200,6 +200,8 @@ else()
     set(SIMPLEDUMP_VERSION_TAG "${GIT_HAS_BRANCH}/${CMAKE_BUILD_TYPE}")
 endif()
 
+add_compile_definitions(SIMPLEDUMP_VERSION="${SIMPLEDUMP_VERSION}")
+
 # Used for error messages
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_compile_definitions(SOURCE_PATH_SIZE=${SOURCE_PATH_SIZE})
