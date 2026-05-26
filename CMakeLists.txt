@@ -25,8 +25,6 @@ if(MSVC OR BUILD_MSVC)
     set(VCPKG_APPLOCAL_DEPS CACHE BOOL FALSE)
 endif()
 
-project(SimpleDump)
-
 option(BUILD_GUI "Build the GUI" ON)
 option(BUILD_TESTING "Build the testing program" OFF)
 option(BUILD_TOOLS "Build the tools programs" OFF)
@@ -160,6 +158,7 @@ if((NOT DEFINED ENV{CI}) AND NOT DEFINED ANDROID)
 endif()
 
 project(SimpleDump VERSION "1.2.2")
+set(SIMPLEDUMP_VERSION_TYPE "alpha")
 
 # Check if the current commit has a tag
 execute_process(
@@ -180,12 +179,26 @@ execute_process(
 # Set version
 if(GIT_HAS_TAG STREQUAL "undefined" OR GIT_HAS_TAG STREQUAL "nightly")
     message("-- Commit has no tag/nightly tag (${GIT_HAS_TAG}). Assume dev build")
-    set(SATDUMP_VERSION "${PROJECT_VERSION}-${GIT_HASH}")
+    if(NOT SIMPLEDUMP_VERSION_TYPE STREQUAL "")
+        set(SIMPLEDUMP_VERSION "${PROJECT_VERSION}-${SIMPLEDUMP_VERSION_TYPE}-${GIT_HASH}")
+    else()
+        set(SIMPLEDUMP_VERSION "${PROJECT_VERSION}-${GIT_HASH}")
+    endif()
 else()
     message("-- Commit has tag (${GIT_HAS_TAG}). Assume release build")
-    set(SATDUMP_VERSION "${PROJECT_VERSION}")
+    if(NOT SIMPLEDUMP_VERSION_TYPE STREQUAL "")
+        set(SIMPLEDUMP_VERSION "${PROJECT_VERSION}")
+    else()
+        set(SIMPLEDUMP_VERSION "${PROJECT_VERSION}-${SIMPLEDUMP_VERSION_TYPE}")
+    endif()
 endif()
-add_compile_definitions(SATDUMP_VERSION="${SATDUMP_VERSION}")
+
+# Set branch
+if(GIT_HAS_BRANCH STREQUAL "master")
+    set(SIMPLEDUMP_VERSION_TAG "")
+else()
+    set(SIMPLEDUMP_VERSION_TAG "${GIT_HAS_BRANCH}/${CMAKE_BUILD_TYPE}")
+endif()
 
 # Used for error messages
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
@@ -272,7 +285,7 @@ if((NOT ANDROID) AND ENABLE_INSTALL)
         install(FILES ${CMAKE_SOURCE_DIR}/simpledump_cfg.json DESTINATION share/simpledump)
         install(FILES ${CMAKE_SOURCE_DIR}/icon.png DESTINATION share/simpledump)
     endif()
-    configure_file(${CMAKE_SOURCE_DIR}/satdump.desktop ${CMAKE_CURRENT_BINARY_DIR}/simpledump.desktop @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/simpledump.desktop ${CMAKE_CURRENT_BINARY_DIR}/simpledump.desktop @ONLY)
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledump.desktop DESTINATION share/applications)
@@ -303,7 +316,7 @@ if((NOT ANDROID) AND ENABLE_INSTALL)
     #set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
     #set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
     #set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-    set(CPACK_PACKAGE_VERSION ${SATDUMP_VERSION})
+    set(CPACK_PACKAGE_VERSION ${SIMPLEDUMP_VERSION})
 
     if(MSVC OR BUILD_MSVC)
         # Customize NSIS template
@@ -335,17 +348,17 @@ if((NOT ANDROID) AND ENABLE_INSTALL)
             set(CPACK_PACKAGE_EXECUTABLES ${CPACK_PACKAGE_EXECUTABLES} "simpledump_sdr_server" "SimpleDump SDR Server")
         endif()
 
-        install(RUNTIME_DEPENDENCY_SET satdump_deps
+        install(RUNTIME_DEPENDENCY_SET simpledump_deps
             PRE_EXCLUDE_REGEXES
-                "api-ms-.*"
-                "ext-ms-.*"
-                "^hvsifiletrust\\.dll$"
-                "^pdmutilities\\.dll$"
-                "^vc.*"
-                "^msvcp.*"
-                "^concrt.*"
-                "simpledump_core.dll"
-                "simpledump_interface.dll"
+            "api-ms-.*"
+            "ext-ms-.*"
+            "^hvsifiletrust\\.dll$"
+            "^pdmutilities\\.dll$"
+            "^vc.*"
+            "^msvcp.*"
+            "^concrt.*"
+            "simpledump_core.dll"
+            "simpledump_interface.dll"
             POST_EXCLUDE_REGEXES
             ".*system32/.*\\.dll"
             DIRECTORIES

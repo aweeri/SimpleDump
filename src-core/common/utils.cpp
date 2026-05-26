@@ -73,7 +73,7 @@ int curl_float_progress_func(void *ptr, curl_off_t TotalToDownload, curl_off_t N
     float *pptr = (float *)ptr;
     if (TotalToDownload != 0)
         *pptr = (float)NowDownloaded / (float)TotalToDownload;
-    else if(TotalToUpload != 0)
+    else if (TotalToUpload != 0)
         *pptr = (float)NowUploaded / (float)TotalToUpload;
     return 0;
 }
@@ -91,7 +91,7 @@ int perform_http_request(std::string url_str, std::string &result, std::string a
     if (curl)
     {
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string((std::string) "SatDump/v" + SATDUMP_VERSION).c_str());
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string((std::string) "SatDump/v" + SIMPLEDUMP_VERSION).c_str());
         curl_easy_setopt(curl, CURLOPT_URL, url_str.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_std_string);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
@@ -150,7 +150,7 @@ int perform_http_request_post(std::string url_str, std::string &result, std::str
     if (curl)
     {
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string((std::string) "SatDump/v" + SATDUMP_VERSION).c_str());
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string((std::string) "SatDump/v" + SIMPLEDUMP_VERSION).c_str());
         curl_easy_setopt(curl, CURLOPT_URL, url_str.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_req.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_std_string);

@@ -11,7 +11,7 @@ add_executable(simpledump-ui ${SimpleDump_ui_CPPS} ${WIN32_RESOURCES})
 target_include_directories(simpledump-ui PUBLIC . ../src-core ../src-interface ../libsdr)
 
 # Link against the core
-target_link_libraries(simpledump-ui PUBLIC satdump_core satdump_interface)
+target_link_libraries(simpledump-ui PUBLIC simpledump_core simpledump_interface)
 
 # OpenGL or OpenGL ES
 option(BUILD_GLES "Build the GUI with OpenGL ES" OFF)
@@ -40,7 +40,7 @@ else()
 endif()
 
 if(MSVC OR BUILD_MSVC)
-    install(TARGETS simpledump-ui DESTINATION ${CMAKE_INSTALL_BINDIR} RUNTIME_DEPENDENCY_SET satdump_deps)
+    install(TARGETS simpledump-ui DESTINATION ${CMAKE_INSTALL_BINDIR} RUNTIME_DEPENDENCY_SET simpledump_deps)
 else()
     install(TARGETS simpledump-ui DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()

@@ -30,13 +30,13 @@ namespace satdump
         logger->info(" ___/ / /_/ / /_/ /_/ / /_/ / / / / / / /_/ /");
         logger->info("/____/\\__,_/\\__/_____/\\__,_/_/ /_/ /_/ .___/ ");
         logger->info("                                    /_/      ");
-        logger->info("Starting SimpleDump v" + (std::string)SATDUMP_VERSION);
+        logger->info("Starting SimpleDump v" + (std::string)SIMPLEDUMP_VERSION);
         logger->info("");
 
 #ifdef _WIN32
         if (std::filesystem::exists("simpledump_cfg.json"))
             user_path = "./config";
-        else 
+        else
             user_path = std::string(getenv("APPDATA")) + "/simpledump";
 #elif __ANDROID__
         user_path = ".";
@@ -54,9 +54,8 @@ namespace satdump
         catch (std::exception &e)
         {
             logger->critical("Error loading SimpleDump config! SimpleDump will now exit. Error:\n%s", e.what());
-            if(is_gui)
-                pfd::message("SimpleDump", "Error loading SimpleDump config! SimpleDump will now exit. Error:\n\n" +
-                    std::string(e.what()), pfd::choice::ok, pfd::icon::error);
+            if (is_gui)
+                pfd::message("SimpleDump", "Error loading SimpleDump config! SimpleDump will now exit. Error:\n\n" + std::string(e.what()), pfd::choice::ok, pfd::icon::error);
             exit(1);
         }
 

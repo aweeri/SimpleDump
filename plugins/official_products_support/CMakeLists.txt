@@ -19,7 +19,7 @@ if(${HDF5_FOUND})
 
   add_library(official_products_support SHARED
               ${official_products_support_CPPS})
-  target_link_libraries(official_products_support PUBLIC satdump_core)
+  target_link_libraries(official_products_support PUBLIC simpledump_core)
   target_include_directories(official_products_support PUBLIC src)
 
   target_include_directories(official_products_support
@@ -30,11 +30,11 @@ if(${HDF5_FOUND})
   if(MSVC OR BUILD_MSVC)
     install(
       TARGETS official_products_support
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/satdump/plugins
-      RUNTIME_DEPENDENCY_SET satdump_deps)
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/simpledump/plugins
+      RUNTIME_DEPENDENCY_SET simpledump_deps)
   else()
     install(TARGETS official_products_support
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}/satdump/plugins)
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/simpledump/plugins)
   endif()
 
   # Loader plugin
@@ -42,16 +42,16 @@ if(${HDF5_FOUND})
     file(GLOB_RECURSE loader_CPPS main_loader.cpp loader/*.cpp)
     add_library(official_products_loader_support SHARED ${loader_CPPS})
     target_link_libraries(official_products_loader_support
-                          PUBLIC official_products_support satdump_interface)
+                          PUBLIC official_products_support simpledump_interface)
 
     if(MSVC OR BUILD_MSVC)
       install(
         TARGETS official_products_loader_support
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/satdump/plugins
-        RUNTIME_DEPENDENCY_SET satdump_deps)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/simpledump/plugins
+        RUNTIME_DEPENDENCY_SET simpledump_deps)
     else()
       install(TARGETS official_products_loader_support
-              DESTINATION ${CMAKE_INSTALL_LIBDIR}/satdump/plugins)
+              DESTINATION ${CMAKE_INSTALL_LIBDIR}/simpledump/plugins)
     endif()
   endif()
 

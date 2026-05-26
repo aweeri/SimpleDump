@@ -5,6 +5,6 @@ Terminal=false
 Exec=@CMAKE_INSTALL_PREFIX@/bin/simpledump-ui
 Name=SimpleDump
 Icon=@CMAKE_INSTALL_PREFIX@/share/simpledump/icon.png
-StartupWMClass=SimpleDump v@SATDUMP_VERSION@
+StartupWMClass=SimpleDump v@SIMPLEDUMP_VERSION@
 Categories=Science;HamRadio
 Keywords=Satellite;SDR

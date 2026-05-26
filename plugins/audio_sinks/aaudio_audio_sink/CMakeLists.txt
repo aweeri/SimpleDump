@@ -6,9 +6,9 @@ if(ANDROID)
     file(GLOB_RECURSE aaudio_audio_sink *.cpp)
     add_library(aaudio_audio_sink SHARED ${aaudio_audio_sink})
 
-    target_link_libraries(aaudio_audio_sink PUBLIC satdump_core aaudio)
+    target_link_libraries(aaudio_audio_sink PUBLIC simpledump_core aaudio)
 
-    install(TARGETS aaudio_audio_sink DESTINATION ${CMAKE_INSTALL_LIBDIR}/satdump/plugins)
+    install(TARGETS aaudio_audio_sink DESTINATION ${CMAKE_INSTALL_LIBDIR}/simpledump/plugins)
 else()
     message("AAudio Library could not be found! Not building.")
 endif()

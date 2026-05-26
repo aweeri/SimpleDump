@@ -35,7 +35,7 @@ bool source_is_started = false;
 int main(int argc, char *argv[])
 {
     initLogger();
-    logger->info("Starting SatDump SDR Server v" + (std::string)SATDUMP_VERSION);
+    logger->info("Starting SatDump SDR Server v" + (std::string)SIMPLEDUMP_VERSION);
 
     int port_used = 5656;
     try
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
         if (argc > 1)
             port_used = std::stoi(argv[1]);
     }
-    catch (std::exception&)
+    catch (std::exception &)
     {
         logger->error("Usage : " + std::string(argv[0]) + " [port]");
         return 1;

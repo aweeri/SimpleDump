@@ -49,10 +49,10 @@ namespace widgets
         is_downloading = true;
         file_downloading = output_file;
 
-        CURL* curl;
+        CURL *curl;
         CURLcode res;
         bool ret = 1;
-        char error_buffer[CURL_ERROR_SIZE] = { 0 };
+        char error_buffer[CURL_ERROR_SIZE] = {0};
 
         curl_global_init(CURL_GLOBAL_ALL);
 
@@ -62,7 +62,7 @@ namespace widgets
         if (curl)
         {
             curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
-            curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string((std::string)"SatDump/v" + SATDUMP_VERSION).c_str());
+            curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string((std::string) "SatDump/v" + SIMPLEDUMP_VERSION).c_str());
             curl_easy_setopt(curl, CURLOPT_URL, url_str.c_str());
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_std_ofstream);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &output_filestream);
@@ -72,7 +72,7 @@ namespace widgets
             curl_easy_setopt(curl, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NATIVE_CA);
 #endif
 
-            struct curl_slist* chunk = NULL;
+            struct curl_slist *chunk = NULL;
             if (added_header != "")
             {
                 /* Remove a header curl would otherwise add by itself */
