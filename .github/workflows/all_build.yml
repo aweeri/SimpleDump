@@ -497,7 +497,7 @@ jobs:
               run: sudo apt install -y unzip
 
             - name: Copy files
-              run: mkdir simpledump_out && cp SimpleDump-Ubuntu-22.04/satdump*.deb simpledump_out/satdump_ubuntu_22.04_amd64.deb && cp SimpleDump-Ubuntu-24.04/satdump*.deb simpledump_out/satdump_ubuntu_24.04_amd64.deb && (cd SimpleDump-Windows_x64_Portable && zip -r ../simpledump_out/SimpleDump-Windows_x64_Portable.zip *) && cp SimpleDump-Windows_x64_Installer/SimpleDump-*.exe simpledump_out/SimpleDump-Windows_x64_Installer.exe && (cd SimpleDump-Windows_arm64_Portable && zip -r ../simpledump_out/SimpleDump-Windows_arm64_Portable.zip *) && cp SimpleDump-Windows_arm64_Installer/SimpleDump-*.exe simpledump_out/SimpleDump-Windows_arm64_Installer.exe && cp SimpleDump-Pi64-Latest/satdump*.deb simpledump_out/satdump_rpi64_latest_arm64.deb
+              run: mkdir simpledump_out && cp SimpleDump-Ubuntu-22.04/simpledump*.deb simpledump_out/simpledump_ubuntu_22.04_amd64.deb && cp SimpleDump-Ubuntu-24.04/simpledump*.deb simpledump_out/simpledump_ubuntu_24.04_amd64.deb && (cd SimpleDump-Windows_x64_Portable && zip -r ../simpledump_out/SimpleDump-Windows_x64_Portable.zip *) && cp SimpleDump-Windows_x64_Installer/SimpleDump-*.exe simpledump_out/SimpleDump-Windows_x64_Installer.exe && (cd SimpleDump-Windows_arm64_Portable && zip -r ../simpledump_out/SimpleDump-Windows_arm64_Portable.zip *) && cp SimpleDump-Windows_arm64_Installer/SimpleDump-*.exe simpledump_out/SimpleDump-Windows_arm64_Installer.exe && cp SimpleDump-Pi64-Latest/simpledump*.deb simpledump_out/simpledump_rpi64_latest_arm64.deb
 
             - name: Update Nightly
               run: gh release upload nightly simpledump_out/* -R ${{github.repository}} --clobber
