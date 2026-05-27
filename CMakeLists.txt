@@ -157,7 +157,7 @@ if((NOT DEFINED ENV{CI}) AND NOT DEFINED ANDROID)
     endif()
 endif()
 
-project(SimpleDump VERSION "1.2.2")
+project(SimpleDump VERSION "1.0.0")
 set(SIMPLEDUMP_VERSION_TYPE "alpha")
 
 # Check if the current commit has a tag
